@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
     BASHRC="/home/vagrant/.bashrc"
 
     apt-get update
-    apt-get install -y fuse libfuse2 git    
+    apt-get install -y fuse libfuse2 git curl libuv tree-sitter gcc
 
     EXEC_PATH=/home/vagrant/fastgithub/fastgithub
     echo "Found fastgithub executable: $EXEC_PATH"
