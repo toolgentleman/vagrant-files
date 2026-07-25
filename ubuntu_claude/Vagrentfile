@@ -1,0 +1,29 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-24.04"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "4096"  # Claude Code 建议至少 4GB 内存
+    vb.cpus = 2
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+    set -e 
+    
+    apt-get update
+
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+    apt-get install -y nodejs
+    
+    node --version
+    npm --version
+
+    npm install -g @anthropic-ai/claude-code
+
+    claude --version || echo "Claude Code 安装完成"
+
+    echo "done"
+  SHELL
+end
