@@ -32,6 +32,8 @@ Vagrant.configure("2") do |config|
     npm --version
     npm config set registry https://registry.npmmirror.com
 
+    sudo npm install -g tree-sitter-cli
+
     EXEC_PATH=/home/vagrant/fastgithub/fastgithub
     echo "Found fastgithub executable: $EXEC_PATH"
     chmod +x "$EXEC_PATH"
