@@ -13,12 +13,34 @@ Vagrant.configure("2") do |config|
     source: "./nvim-linux-x86_64.appimage", 
     destination: "/home/vagrant/nvim.appimage"
 
+  config.vm.synced_folder "./fastgithub", "/home/vagrant/fastgithub"
+
   config.vm.provision "shell", inline: <<-SHELL
     set -e 
-    
-    apt-get update
+    FASTGITHUB_DIR="/home/vagrant/fastgithub"
+    PROXY="http://127.0.0.1:38457"
+    BASHRC="/home/vagrant/.bashrc"
 
-    apt-get install -y fuse libfuse2
+    apt-get update
+    apt-get install -y fuse libfuse2 git    
+
+    EXEC_PATH=/home/vagrant/fastgithub/fastgithub
+    echo "Found fastgithub executable: $EXEC_PATH"
+    sudo "$EXEC_PATH" start
+    sleep 2
+    systemctl status fastgithub || echo "fastgithub service may not be active, check logs."
+
+    if ! grep -q "export http_proxy" "$BASHRC"; then
+      echo "export http_proxy=$PROXY" >> "$BASHRC"
+      echo "export https_proxy=$PROXY" >> "$BASHRC"
+      echo "export all_proxy=$PROXY" >> "$BASHRC"
+      echo "git config --global http.proxy $PROXY" >> "$BASHRC"
+      echo "git config --global https.proxy $PROXY" >> "$BASHRC"
+      echo "Proxy environment variables added to ~/.bashrc"
+    else
+      echo "Proxy already set in ~/.bashrc"
+    fi
+
     chmod +x /home/vagrant/nvim.appimage
     ln -sf /home/vagrant/nvim.appimage /usr/local/bin/nvim
 
@@ -27,9 +49,6 @@ Vagrant.configure("2") do |config|
     node --version
     npm --version
     npm config set registry https://registry.npmmirror.com
-
-    npm install -g pnpm
-    pnpm config set registry https://registry.npmmirror.com
 
     npm install -g @anthropic-ai/claude-code
     claude --version || echo "Claude Code installed"
