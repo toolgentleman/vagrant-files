@@ -13,7 +13,9 @@ Vagrant.configure("2") do |config|
     source: "./nvim-linux-x86_64.appimage", 
     destination: "/home/vagrant/nvim.appimage"
 
-  config.vm.synced_folder "./fastgithub", "/home/vagrant/fastgithub"
+  config.vm.provision "file", 
+    source: "./fastgithub", 
+    destination: "/home/vagrant/fastgithub"
 
   config.vm.provision "shell", inline: <<-SHELL
     set -e 
