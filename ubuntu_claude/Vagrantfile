@@ -20,7 +20,6 @@ Vagrant.configure("2") do |config|
     npm --version
 
     npm config set registry https://registry.npmmirror.com
-    npm config set disturl https://npmmirror.com/dist
 
     npm install -g @anthropic-ai/claude-code
     claude --version || echo "Claude Code installed"
