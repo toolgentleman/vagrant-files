@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
     claude --version || echo "Claude Code installed"
 
     apt-get install -y software-properties-common git unzip curl
-    add-apt-repository ppa:neovim-ppa/stable -y
+    add-apt-repository ppa:neovim-ppa/unstable -y
     apt-get update
     apt-get install -y neovim
 
