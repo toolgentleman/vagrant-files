@@ -9,6 +9,8 @@ Vagrant.configure("2") do |config|
     vb.cpus = 2
   end
 
+  config.vm.provision "file", source: "./dev-sidecar", destination: "/home/vagrant/dev-sidecar"
+
   config.vm.provision "shell", inline: <<-SHELL
     set -e 
     
@@ -18,39 +20,19 @@ Vagrant.configure("2") do |config|
     apt-get install -y nodejs
     node --version
     npm --version
-
     npm config set registry https://registry.npmmirror.com
+
+    npm install -g pnpm
+    pnpm config set registry https://registry.npmmirror.com
+
+    cd /home/vagrant/dev-sidecar
+    pnpm install
+
+    cd /home/vagrant/dev-sidecar/packages/gui
+    npm run build
 
     npm install -g @anthropic-ai/claude-code
     claude --version || echo "Claude Code installed"
-
-    npm install -g @docmirror/dev-sidecar-cli
-    ds-cli --version || echo "dev-sidecar CLI installed"
-
-    cat > /etc/systemd/system/dev-sidecar.service << 'EOF'
-[Unit]
-Description=Dev Sidecar CLI
-After=network.target
-
-[Service]
-Type=forking
-User=root
-ExecStart=/usr/bin/ds-cli start
-ExecStop=/usr/bin/ds-cli stop
-ExecReload=/usr/bin/ds-cli restart
-Restart=on-failure
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-    systemctl daemon-reload
-    systemctl enable dev-sidecar.service
-    systemctl start dev-sidecar.service
-
-    sleep 2
-    ds-cli status || echo "Service started"
 
     echo "done"
   SHELL
