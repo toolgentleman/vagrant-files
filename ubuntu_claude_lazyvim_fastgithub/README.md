@@ -1,8 +1,8 @@
 # Usage
 
-## Dependencies (download and put to current directory)
+## Dependencies
 
-NeoVIM App Image
+NeoVIM App Image (download and put to current directory)
 ```
 https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
 ```
