@@ -15,14 +15,19 @@ Vagrant.configure("2") do |config|
     destination: "/home/vagrant/nvim.appimage"
 
   config.vm.provision "file", 
-    source: "./fastgithub", 
-    destination: "/home/vagrant/fastgithub"
+    source: "./fastgithub-linux-x64-ok.tar.gz", 
+    destination: "/home/vagrant/fastgithub-linux-x64-ok.tar.gz"
 
   config.vm.provision "shell", inline: <<-SHELL
     set -e 
     FASTGITHUB_DIR="/home/vagrant/fastgithub"
     PROXY="http://127.0.0.1:38457"
     BASHRC="/home/vagrant/.bashrc"
+
+    cd /home/vagrant
+    tar xzvf fastgithub-linux-x64-ok.tar.gz
+
+    mv publish fastgithub
 
     apt-get update
     apt-get install -y fuse libfuse2 git curl gcc
